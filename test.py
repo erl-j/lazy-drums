@@ -1,6 +1,6 @@
 #%%
-from playback_engine import PlaybackEngine
-from . import BEATS
+from lazy_drums.playback_engine import PlaybackEngine
+from lazy_drums import BEATS
         
 playback_engine = PlaybackEngine(ppq=96)
 # # show rock beat

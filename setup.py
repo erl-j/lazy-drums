@@ -6,6 +6,12 @@ setup(name='lazy_drums',
       url='http://github.com/erl-j/lazy-drums',
       author='erl-j',
       author_email='njona@kth.se',
+      install_requires=[
+          'numpy',
+          'pedalboard',
+          'matplotlib'
+      ],
       license='MIT',
       packages=['lazy_drums'],
+      include_package_data=True,
       zip_safe=False)

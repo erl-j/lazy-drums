@@ -1,14 +1,12 @@
-#%%
-import pedalboard
-import json
-from CONSTANTS import NR_TO_DRUM_NAME
-import pydash
-import itertools
-import numpy as np
 import IPython.display as ipd
-import os
 import matplotlib.pyplot as plt
-import BEATS
+import numpy as np
+import pedalboard
+from .CONSTANTS import NR_TO_DRUM_NAME
+import os
+
+_ROOT = os.path.abspath(os.path.dirname(__file__))
+
 
 def play_audio(audio,sr, autoplay=False):
     ipd.display(ipd.Audio(audio, rate=sr, autoplay=autoplay))
@@ -25,7 +23,7 @@ class PlaybackEngine:
         self.n_gm_drums = 81
         self.DRUM_NAME_TO_SAMPLES = {
             drum_name
-            : self.load_sample(f"GM_samples/{drum_name}.wav") for drum_name in self.DRUM_NAME_TO_NR.keys()
+            : self.load_sample(f"{_ROOT}/GM_samples/{drum_name}.wav") for drum_name in self.DRUM_NAME_TO_NR.keys()
         }
         self.CHOKE_GROUP_2_DRUM_NAMES = {
             "hi_hat": ["Closed Hi Hat", "Open Hi-Hat"],
