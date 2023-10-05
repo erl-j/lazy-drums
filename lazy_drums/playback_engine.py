@@ -198,6 +198,7 @@ class PlaybackEngine:
         tempo = beat["tempo"]
         time_signature = beat["time_signature"]
         n_bars = beat["n_bars"]
+        
 
         counts_per_bar = time_signature[0]
         counted_unit = time_signature[1]
