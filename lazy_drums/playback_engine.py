@@ -4,6 +4,7 @@ import numpy as np
 import pedalboard
 from .CONSTANTS import NR_TO_DRUM_NAME
 import os
+import pretty_midi
 
 _ROOT = os.path.abspath(os.path.dirname(__file__))
 
@@ -191,6 +192,31 @@ class PlaybackEngine:
     def play_beat(self, beat, n_loops=1, autoplay=False):
         audio = self.render_beat(beat, n_loops)
         play_audio(audio,self.sample_rate, autoplay=autoplay)
+
+    def play_pm(self, pm, n_loops=1, autoplay=False):
+        # get time signature
+        time_signature = (pm.time_signature_changes[0].numerator, pm.time_signature_changes[0].denominator)
+        # get tempo
+        tempo = pm.get_tempo_changes()[1][0]
+        # get n_bars
+        n_bars = len(pm.get_downbeats())
+        # get sequence
+        sequence = []
+        for instrument in pm.instruments:
+            for note in instrument.notes:
+                sequence.append({
+                    "drum_name": instrument.name,
+                    "onset": note.start,
+                    "velocity": note.velocity,
+                })
+        beat = {
+            "sequence": sequence,
+            "tempo": tempo,
+            "time_signature": time_signature,
+            "n_bars": n_bars,
+        }
+        self.show_beat(beat)
+        self.play_beat(beat, n_loops, autoplay=autoplay)
     
     def show_beat(self, beat):
         beat = beat.copy()
@@ -198,7 +224,6 @@ class PlaybackEngine:
         tempo = beat["tempo"]
         time_signature = beat["time_signature"]
         n_bars = beat["n_bars"]
-        
 
         counts_per_bar = time_signature[0]
         counted_unit = time_signature[1]
