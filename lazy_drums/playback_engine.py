@@ -116,7 +116,6 @@ class PlaybackEngine:
         beat["time_signature"] = (pm.time_signature_changes[0].numerator, pm.time_signature_changes[0].denominator) 
         # calculate n_bars
         beat["n_bars"] = len(pm.get_downbeats())
-        print(f"n_bars: {beat['n_bars']}")
         self.show_beat(beat)
         beat = self.loop_beat(beat, n_loops)
         self.play_beat(beat, n_loops=1, autoplay=autoplay)
