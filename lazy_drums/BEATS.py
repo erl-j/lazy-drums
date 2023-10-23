@@ -36,7 +36,3 @@ PROG_BEAT = {
     {"drum_name": "Open Hi-Hat", "onset": 576, "velocity": 60},     
 ]
 }
-
-import json
-# pretty print json
-print(json.dumps(ROCK_BEAT, indent=4))

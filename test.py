@@ -14,3 +14,10 @@ playback_engine.show_beat(beat)
 audio = playback_engine.play_beat(beat, n_loops=1, autoplay=False)
 
 # %%
+import pretty_midi
+
+pm = pretty_midi.PrettyMIDI("./lazy_drums/test.mid")
+
+playback_engine.play_pretty_midi(pm,2)
+
+# %%

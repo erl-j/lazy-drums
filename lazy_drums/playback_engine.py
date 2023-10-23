@@ -5,6 +5,7 @@ import pedalboard
 from .CONSTANTS import NR_TO_DRUM_NAME
 import os
 import pretty_midi
+import math
 
 _ROOT = os.path.abspath(os.path.dirname(__file__))
 
@@ -103,6 +104,24 @@ class PlaybackEngine:
             audio += choke_group_audio
         return audio
     
+    def play_pretty_midi(self,pm, n_loops, autoplay=False):
+        # convert pretty midi and play
+        beat = {}
+        beat["sequence"] = []
+        midi_ppq = pm.resolution
+        for note in pm.instruments[0].notes:
+            beat["sequence"].append({"drum_name": NR_TO_DRUM_NAME[note.pitch], "onset": int(pm.time_to_tick(note.start) * self.ppq / (midi_ppq))
+                                     , "velocity": note.velocity})
+        beat["tempo"] = pm.get_tempo_changes()[1][0]
+        beat["time_signature"] = (pm.time_signature_changes[0].numerator, pm.time_signature_changes[0].denominator) 
+        # calculate n_bars
+        beat["n_bars"] = len(pm.get_downbeats())
+        print(f"n_bars: {beat['n_bars']}")
+        self.show_beat(beat)
+        beat = self.loop_beat(beat, n_loops)
+        self.play_beat(beat, n_loops=1, autoplay=autoplay)
+
+    
     def loop_beat(self, beat, n_loops):
         """Loops a sequence
 
@@ -193,30 +212,6 @@ class PlaybackEngine:
         audio = self.render_beat(beat, n_loops)
         play_audio(audio,self.sample_rate, autoplay=autoplay)
 
-    def play_pm(self, pm, n_loops=1, autoplay=False):
-        # get time signature
-        time_signature = (pm.time_signature_changes[0].numerator, pm.time_signature_changes[0].denominator)
-        # get tempo
-        tempo = pm.get_tempo_changes()[1][0]
-        # get n_bars
-        n_bars = len(pm.get_downbeats())
-        # get sequence
-        sequence = []
-        for instrument in pm.instruments:
-            for note in instrument.notes:
-                sequence.append({
-                    "drum_name": instrument.name,
-                    "onset": note.start,
-                    "velocity": note.velocity,
-                })
-        beat = {
-            "sequence": sequence,
-            "tempo": tempo,
-            "time_signature": time_signature,
-            "n_bars": n_bars,
-        }
-        self.show_beat(beat)
-        self.play_beat(beat, n_loops, autoplay=autoplay)
     
     def show_beat(self, beat):
         beat = beat.copy()
